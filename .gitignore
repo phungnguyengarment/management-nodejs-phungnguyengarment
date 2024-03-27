@@ -1,0 +1,11 @@
+node_modules/
+
+dist/
+
+certs/
+
+package-lock.json
+
+logs.log
+
+*.env
