@@ -1,7 +1,7 @@
 import UserSchema, { User } from '~/models/user.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 
 const NAMESPACE = 'services/user'
 
@@ -9,9 +9,9 @@ export const createNewItem = async (item: User): Promise<UserSchema | null> => {
   try {
     const userCreated = await UserSchema.create({ ...item })
     return userCreated
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -19,18 +19,18 @@ export const createNewItem = async (item: User): Promise<UserSchema | null> => {
 export const getItemByPk = async (id: number): Promise<UserSchema | null> => {
   try {
     return await UserSchema.findByPk(id)
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemBy = async (item: User): Promise<UserSchema | null> => {
   try {
     return await UserSchema.findOne({ where: { ...item } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -41,12 +41,12 @@ export const getItems = async (body: RequestBodyType): Promise<{ count: number; 
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<User>(body)
+      where: dynamicQuery<User>(body)
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -57,18 +57,18 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<UserSc
         status: status
       }
     })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await UserSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -86,9 +86,9 @@ export const updateItemByPk = async (id: number, item: User): Promise<User | und
       }
     )
     return affectedRows[0] > 0 ? item : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -104,9 +104,9 @@ export const updateItemByEmail = async (email: string, itemToUpdate: User): Prom
       }
     )
     return affectedRows[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -114,8 +114,8 @@ export const updateItemByEmail = async (email: string, itemToUpdate: User): Prom
 export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     return await UserSchema.destroy({ where: { id: id } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }

@@ -1,7 +1,7 @@
 import UserRoleSchema, { UserRole } from '~/api/models/user-role.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 import RoleSchema from '../models/role.model'
 import UserSchema from '../models/user.model'
 
@@ -10,17 +10,17 @@ const NAMESPACE = 'services/user-role'
 export const createNewItem = async (item: UserRole): Promise<UserRoleSchema> => {
   try {
     return await UserRoleSchema.create({ ...item })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const createNewItems = async (items: UserRole[]): Promise<UserRoleSchema[]> => {
   try {
     return await UserRoleSchema.bulkCreate(items)
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -34,9 +34,9 @@ export const getItemByPk = async (id: number): Promise<UserRoleSchema | null> =>
         { model: RoleSchema, as: 'role' }
       ]
     })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -49,9 +49,9 @@ export const getItemBy = async (item: UserRole): Promise<UserRoleSchema | null> 
         { model: RoleSchema, as: 'role' }
       ]
     })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -64,9 +64,9 @@ export const getItemsBy = async (item: UserRole): Promise<UserRoleSchema[] | nul
         { model: RoleSchema, as: 'role' }
       ]
     })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -77,16 +77,16 @@ export const getItems = async (body: RequestBodyType): Promise<{ count: number; 
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<UserRole>(body),
+      where: dynamicQuery<UserRole>(body),
       include: [
         { model: UserSchema, as: 'user' },
         { model: RoleSchema, as: 'role' }
       ]
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -98,18 +98,18 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<UserRo
       }
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await UserRoleSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -127,9 +127,9 @@ export const updateItemByPk = async (id: number, itemToUpdate: UserRole): Promis
       }
     )
     return affectedRows[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -167,9 +167,9 @@ export const updateItemsBy = async (
     // Trả về danh sách cập nhật sau xử lý
     const updatedList = [...existingRecords.filter((record) => recordsToDelete.includes(record), ...recordsToAdd)]
     return updatedList
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -188,9 +188,9 @@ export const deleteItemsByUserID = async (userID: number): Promise<undefined | U
     })
     // Trả về danh sách cập nhật sau xử lý
     return recordsToDelete
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -198,8 +198,8 @@ export const deleteItemsByUserID = async (userID: number): Promise<undefined | U
 export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     return await UserRoleSchema.destroy({ where: { id: id } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }

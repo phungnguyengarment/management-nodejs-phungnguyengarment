@@ -29,8 +29,8 @@ export default class SewingLineController {
         return res.formatter.created({ data: itemNew, message: message.CREATED })
       }
       return res.formatter.badRequest({ message: message.CREATION_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -42,8 +42,8 @@ export default class SewingLineController {
         return res.formatter.ok({ data: item, message: message.SUCCESS })
       }
       return res.formatter.notFound({ message: message.FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -55,8 +55,8 @@ export default class SewingLineController {
         return res.formatter.ok({ data: item, message: message.SUCCESS })
       }
       return res.formatter.notFound({ message: message.FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -75,8 +75,8 @@ export default class SewingLineController {
         total: bodyRequest.search.term.length > 0 ? items.count : total.length,
         message: message.SUCCESS
       })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -100,8 +100,8 @@ export default class SewingLineController {
         return res.formatter.ok({ data: itemUpdated })
       }
       return res.formatter.badRequest({})
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -124,8 +124,8 @@ export default class SewingLineController {
         return res.formatter.ok({ data: itemUpdated })
       }
       return res.formatter.badRequest({})
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -137,8 +137,8 @@ export default class SewingLineController {
         return res.formatter.ok({ message: `${NAMESPACE} has been deleted` })
       }
       return res.formatter.notFound({})
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -150,8 +150,8 @@ export default class SewingLineController {
         return res.formatter.ok({ message: `${NAMESPACE} has been deleted` })
       }
       return res.formatter.notFound({})
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 }

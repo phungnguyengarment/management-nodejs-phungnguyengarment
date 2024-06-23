@@ -23,60 +23,37 @@ import UserSchema from './user.model'
 
 const PATH = 'model/index'
 
-class DBConnection {
-  private static instance: DBConnection
-  public sequelize: Sequelize | undefined
+const sequelize = new Sequelize(databaseConfig)
 
-  constructor() {
-    this.createConnection()
-  }
+sequelize?.addModels([
+  UserSchema,
+  RoleSchema,
+  UserRoleSchema,
+  ColorSchema,
+  GroupSchema,
+  PrintSchema,
+  ProductSchema,
+  SewingLineSchema,
+  ImportationSchema,
+  SampleSewingSchema,
+  ProductColorSchema,
+  ProductGroupSchema,
+  AccessoryNoteSchema,
+  PrintablePlaceSchema,
+  GarmentAccessorySchema,
+  GarmentAccessoryNoteSchema,
+  SewingLineDeliverySchema,
+  CuttingGroupSchema,
+  CompletionSchema
+])
 
-  public static getInstance(): DBConnection {
-    if (!DBConnection.instance) {
-      DBConnection.instance = new DBConnection()
-    }
-    return DBConnection.instance
-  }
+sequelize
+  .authenticate()
+  .then(async () => {
+    // Check admin exist
+    const userExist = await UserSchema.count()
+    logging.info(PATH, 'Connection has been established successfully. 🥳🎉')
+  })
+  .catch((error) => logging.error(PATH, `Unable to connect to the database: ${error}`))
 
-  async createConnection() {
-    this.sequelize = new Sequelize(databaseConfig)
-
-    this.sequelize?.addModels([
-      UserSchema,
-      RoleSchema,
-      UserRoleSchema,
-      ColorSchema,
-      GroupSchema,
-      PrintSchema,
-      ProductSchema,
-      SewingLineSchema,
-      ImportationSchema,
-      SampleSewingSchema,
-      ProductColorSchema,
-      ProductGroupSchema,
-      AccessoryNoteSchema,
-      PrintablePlaceSchema,
-      GarmentAccessorySchema,
-      GarmentAccessoryNoteSchema,
-      SewingLineDeliverySchema,
-      CuttingGroupSchema,
-      CompletionSchema
-    ])
-
-    await this.sequelize
-      .authenticate()
-      .then(() => logging.info(PATH, 'Connection has been established successfully. 👏'))
-      .catch((error) => logging.error(PATH, `Unable to connect to the database: ${error}`))
-  }
-
-  async closeConnection() {
-    if (this.sequelize) {
-      await this.sequelize
-        .close()
-        .then(() => logging.info(PATH, 'Connection has been closed'))
-        .catch((error) => logging.error(PATH, `Unable to close the database: ${error}`))
-    }
-  }
-}
-
-export const sequelizeInstance = DBConnection.getInstance().sequelize
+export default sequelize

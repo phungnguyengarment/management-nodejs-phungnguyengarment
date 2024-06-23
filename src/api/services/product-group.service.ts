@@ -1,7 +1,7 @@
 import ProductGroupSchema, { ProductGroup } from '~/models/product-group.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 import GroupSchema from '../models/group.model'
 import ProductSchema from '../models/product.model'
 
@@ -18,9 +18,9 @@ export const createNewItem = async (item: ProductGroup): Promise<ProductGroupSch
         ]
       }
     )
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -34,9 +34,9 @@ export const getItemByPk = async (id: number): Promise<ProductGroupSchema | null
       ]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -50,30 +50,30 @@ export const getItemBy = async (productGroup: ProductGroup): Promise<ProductGrou
       ]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 // Get all
 export const getItems = async (body: RequestBodyType): Promise<{ count: number; rows: ProductGroupSchema[] }> => {
   try {
-    console.log(buildDynamicQuery<ProductGroup>(body))
+    console.log(dynamicQuery<ProductGroup>(body))
     const items = await ProductGroupSchema.findAndCountAll({
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<ProductGroup>(body),
+      where: dynamicQuery<ProductGroup>(body),
       include: [
         { model: ProductSchema, as: 'product' },
         { model: GroupSchema, as: 'group' }
       ]
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -85,18 +85,18 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<Produc
       }
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await ProductGroupSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -114,9 +114,9 @@ export const updateItemByPk = async (id: number, item: ProductGroup): Promise<Pr
       }
     )
     return affectedRows[0] > 0 ? item : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -136,7 +136,7 @@ export const updateItemByProductID = async (
       }
     )
     return affectedRows[0] > 0 ? item : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByProductID :: ${error}`)
     throw new Error(`updateItemByProductID :: ${error}`)
   }
@@ -155,7 +155,7 @@ export const updateItemByGroupID = async (groupID: number, item: ProductGroup): 
       }
     )
     return affectedRows[0] > 0 ? item : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByGroupID :: ${error}`)
     throw new Error(`updateItemByGroupID :: ${error}`)
   }
@@ -181,7 +181,7 @@ export const createOrUpdateItemByPk = async (
     } else {
       return await ProductGroupSchema.create({ ...item })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByPk :: ${error}`)
     throw new Error(`createOrUpdateItemByPk :: ${error}`)
   }
@@ -207,7 +207,7 @@ export const createOrUpdateItemBy = async (
     } else {
       return await ProductGroupSchema.create({ ...item, [query.field]: query.id })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByProductID :: ${error}`)
     throw new Error(`createOrUpdateItemByProductID :: ${error}`)
   }
@@ -218,9 +218,9 @@ export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     const affectedRows = await ProductGroupSchema.destroy({ where: { id: id } })
     return affectedRows
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -228,7 +228,7 @@ export const deleteItemBy = async (query: { field: string; id: number }): Promis
   try {
     const affectedRows = await ProductGroupSchema.destroy({ where: { [query.field]: query.id } })
     return affectedRows
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemBy :: ${error}`)
     throw new Error(`deleteItemBy :: ${error}`)
   }

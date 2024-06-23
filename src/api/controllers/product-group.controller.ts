@@ -22,8 +22,8 @@ export default class ProductGroupController {
         return res.formatter.created({ data: itemNew, message: message.CREATED })
       }
       return res.formatter.badRequest({ message: message.CREATION_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -32,8 +32,8 @@ export default class ProductGroupController {
       const id = Number(req.params.id)
       const item = await service.getItemByPk(id)
       return res.formatter.ok({ data: item, message: message.SUCCESS })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -42,8 +42,8 @@ export default class ProductGroupController {
       const productID = Number(req.params.productID)
       const item = await service.getItemBy({ productID: productID })
       return res.formatter.ok({ data: item, message: message.SUCCESS })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -52,8 +52,8 @@ export default class ProductGroupController {
       const groupID = Number(req.params.groupID)
       const item = await service.getItemBy({ groupID: groupID })
       return res.formatter.ok({ data: item, message: message.SUCCESS })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -72,8 +72,8 @@ export default class ProductGroupController {
         total: bodyRequest.search.term.length > 0 ? items.count : total.length,
         message: message.SUCCESS
       })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -90,8 +90,8 @@ export default class ProductGroupController {
         return res.formatter.ok({ data: itemUpdated, message: message.UPDATED })
       }
       return res.formatter.badRequest({ message: message.UPDATE_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -107,8 +107,8 @@ export default class ProductGroupController {
         return res.formatter.ok({ data: itemUpdated, message: message.UPDATED })
       }
       return res.formatter.badRequest({ message: message.UPDATE_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -124,8 +124,8 @@ export default class ProductGroupController {
         return res.formatter.ok({ data: itemUpdated, message: message.UPDATED })
       }
       return res.formatter.badRequest({ message: message.UPDATE_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -153,8 +153,8 @@ export default class ProductGroupController {
           return res.formatter.badRequest({ message: message.CREATION_FAILED })
         }
       }
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -184,8 +184,8 @@ export default class ProductGroupController {
           return res.formatter.badRequest({ message: message.CREATION_FAILED })
         }
       }
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -197,8 +197,8 @@ export default class ProductGroupController {
         return res.formatter.ok({ message: message.DELETED })
       }
       return res.formatter.notFound({ message: message.DELETE_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -210,8 +210,8 @@ export default class ProductGroupController {
         return res.formatter.ok({ message: message.DELETED })
       }
       return res.formatter.notFound({ message: message.DELETE_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -223,8 +223,8 @@ export default class ProductGroupController {
         return res.formatter.ok({ message: message.DELETED })
       }
       return res.formatter.notFound({ message: message.DELETE_FAILED })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 }

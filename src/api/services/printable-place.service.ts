@@ -1,7 +1,7 @@
 import PrintablePlaceSchema, { PrintablePlace } from '~/models/printable-place.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 import PrintSchema from '../models/print.model'
 import ProductSchema from '../models/product.model'
 
@@ -18,8 +18,8 @@ export const createNewItem = async (item: PrintablePlace): Promise<PrintablePlac
         ]
       }
     )
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -44,7 +44,7 @@ export const createOrUpdateItemByPk = async (
     } else {
       return await PrintablePlaceSchema.create({ ...item })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByPk :: ${error}`)
     throw new Error(`createOrUpdateItemByPk :: ${error}`)
   }
@@ -70,7 +70,7 @@ export const createOrUpdateItemByProductID = async (
     } else {
       return await PrintablePlaceSchema.create({ ...item, productID: productID })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByProductID :: ${error}`)
     throw new Error(`createOrUpdateItemByProductID :: ${error}`)
   }
@@ -96,7 +96,7 @@ export const createOrUpdateItemByPrintID = async (
     } else {
       return await PrintablePlaceSchema.create({ ...item, printID: printID })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByPrintID :: ${error}`)
     throw new Error(`createOrUpdateItemByPrintID :: ${error}`)
   }
@@ -112,9 +112,9 @@ export const getItemByPk = async (id: number): Promise<PrintablePlaceSchema | nu
       ]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -129,8 +129,8 @@ export const getItemBy = async (product: PrintablePlace): Promise<PrintablePlace
       ]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -138,20 +138,20 @@ export const getItemBy = async (product: PrintablePlace): Promise<PrintablePlace
 // Get all
 export const getItems = async (body: RequestBodyType): Promise<{ count: number; rows: PrintablePlaceSchema[] }> => {
   try {
-    // console.log(`${NAMESPACE}>>>`, buildDynamicQuery<PrintablePlace>(body))
+    // console.log(`${NAMESPACE}>>>`, dynamicQuery<PrintablePlace>(body))
     const items = await PrintablePlaceSchema.findAndCountAll({
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<PrintablePlace>(body),
+      where: dynamicQuery<PrintablePlace>(body),
       include: [
         { model: ProductSchema, as: 'product' },
         { model: PrintSchema, as: 'print' }
       ]
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -164,17 +164,17 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<Printa
       }
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await ProductSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -193,7 +193,7 @@ export const updateItemByPk = async (id: number, itemToUpdate: PrintablePlace): 
       }
     )
     return affectedRows[0] === 1 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByPk :: ${error}`)
     throw new Error(`updateItemByPk :: ${error}`)
   }
@@ -215,7 +215,7 @@ export const updateItemByProductID = async (
       }
     )
     return affectedRows[0] === 1 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByProductID :: ${error}`)
     throw new Error(`updateItemByProductID :: ${error}`)
   }
@@ -237,7 +237,7 @@ export const updateItemByPrintID = async (
       }
     )
     return affectedRows[0] === 1 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByColorID :: ${error}`)
     throw new Error(`updateItemByColorID :: ${error}`)
   }
@@ -248,7 +248,7 @@ export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     const affectedRows = await PrintablePlaceSchema.destroy({ where: { id: id } })
     return affectedRows
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemByPk :: ${error}`)
     throw new Error(`deleteItemByPk :: ${error}`)
   }
@@ -258,7 +258,7 @@ export const deleteItemByPrintID = async (printID: number): Promise<number> => {
   try {
     const affectedRows = await PrintablePlaceSchema.destroy({ where: { printID: printID } })
     return affectedRows
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemByPrintID :: ${error}`)
     throw new Error(`deleteItemByPrintID :: ${error}`)
   }
@@ -268,7 +268,7 @@ export const deleteItemByProductID = async (productID: number): Promise<number> 
   try {
     const affectedRows = await PrintablePlaceSchema.destroy({ where: { productID: productID } })
     return affectedRows
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemByProductID :: ${error}`)
     throw new Error(`deleteItemByProductID :: ${error}`)
   }

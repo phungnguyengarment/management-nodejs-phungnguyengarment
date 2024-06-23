@@ -1,16 +1,16 @@
 import PrintSchema, { Print } from '~/models/print.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 
 const NAMESPACE = 'services/print'
 
 export const createNewItem = async (item: Print): Promise<PrintSchema> => {
   try {
     return await PrintSchema.create({ ...item })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -18,18 +18,18 @@ export const createNewItem = async (item: Print): Promise<PrintSchema> => {
 export const getItemByPk = async (id: number): Promise<PrintSchema | null> => {
   try {
     return await PrintSchema.findByPk(id)
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemBy = async (item: Print): Promise<PrintSchema | null> => {
   try {
     return await PrintSchema.findOne({ where: { ...item } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -40,12 +40,12 @@ export const getItems = async (body: RequestBodyType): Promise<{ count: number; 
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<Print>(body)
+      where: dynamicQuery<Print>(body)
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -56,18 +56,18 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<PrintS
         status: status
       }
     })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await PrintSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -85,9 +85,9 @@ export const updateItemByPk = async (id: number, item: Print): Promise<Print | u
       }
     )
     return affectedRows[0] > 0 ? item : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -95,8 +95,8 @@ export const updateItemByPk = async (id: number, item: Print): Promise<Print | u
 export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     return await PrintSchema.destroy({ where: { id: id } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }

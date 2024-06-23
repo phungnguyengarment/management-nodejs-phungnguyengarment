@@ -1,7 +1,7 @@
 import GarmentAccessorySchema, { GarmentAccessory } from '~/models/garment-accessory.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 import ProductSchema from '../models/product.model'
 
 const NAMESPACE = 'services/garment-accessory'
@@ -11,8 +11,8 @@ export const createNewItem = async (item: GarmentAccessory): Promise<GarmentAcce
     return await GarmentAccessorySchema.create({
       ...item
     })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -36,7 +36,7 @@ export const createOrUpdateItemByPk = async (
     } else {
       return await GarmentAccessorySchema.create({ ...item })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByPk :: ${error}`)
     throw new Error(`createOrUpdateItemByPk :: ${error}`)
   }
@@ -48,9 +48,9 @@ export const getItemByPk = async (id: number): Promise<GarmentAccessorySchema | 
       include: [{ model: ProductSchema, as: 'product' }]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -62,8 +62,8 @@ export const getItemBy = async (item: GarmentAccessory): Promise<GarmentAccessor
       include: [{ model: ProductSchema, as: 'product' }]
     })
     return itemFound
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -75,12 +75,12 @@ export const getItems = async (body: RequestBodyType): Promise<{ count: number; 
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<GarmentAccessory>(body),
+      where: dynamicQuery<GarmentAccessory>(body),
       include: [{ model: ProductSchema, as: 'product' }]
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -94,17 +94,17 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<Garmen
       include: [{ model: ProductSchema, as: 'product' }]
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await ProductSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -126,7 +126,7 @@ export const updateItemByPk = async (
       }
     )
     return affectedRows[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByPk :: ${error}`)
     throw new Error(`updateItemByPk :: ${error}`)
   }
@@ -148,7 +148,7 @@ export const updateItemByProductID = async (
       }
     )
     return affectedRows[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByProductID :: ${error}`)
     throw new Error(`updateItemByProductID :: ${error}`)
   }
@@ -157,7 +157,7 @@ export const updateItemByProductID = async (
 export const deleteItemBy = async (query: { field: string; id: number }): Promise<number> => {
   try {
     return await GarmentAccessorySchema.destroy({ where: { [query.field]: query.id } })
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemBy :: ${error}`)
     throw new Error(`deleteItemBy :: ${error}`)
   }

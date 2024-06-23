@@ -1,107 +1,88 @@
+import { getItemsQuery } from '~/helpers/query'
 import ProductSchema, { Product } from '~/models/product.model'
-import { ItemStatusType, RequestBodyType } from '~/type'
-import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { RequestBodyType } from '~/type'
 
 const NAMESPACE = 'services/products'
 
-export const createNewItem = async (item: Product): Promise<ProductSchema> => {
+export const createNewItem = async (item: Product) => {
   try {
-    return await ProductSchema.create({ ...item })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+    const newItem = await ProductSchema.create(item)
+    return newItem
+  } catch (error: any) {
+    throw new Error(`Error creating item: ${error.message}`)
   }
 }
 
 // Get by id
-export const getItemByPk = async (id: number): Promise<ProductSchema | null> => {
+export const getItemByPk = async (id: number) => {
   try {
-    return await ProductSchema.findByPk(id)
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+    const itemFound = await ProductSchema.findByPk(id)
+    if (!itemFound) throw new Error(`Item not found`)
+    return itemFound
+  } catch (error: any) {
+    throw new Error(`Error getting item: ${error.message}`)
   }
 }
 
-export const getItemBy = async (item: Product): Promise<ProductSchema | null> => {
+// Get by id
+export const getItemByProductCode = async (productCode: string) => {
   try {
-    return await ProductSchema.findOne({
-      where: { ...item }
-    })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+    const itemFound = await ProductSchema.findOne({ where: { productCode: productCode } })
+    if (!itemFound) throw new Error(`Item not found`)
+    return itemFound
+  } catch (error: any) {
+    throw new Error(`Error getting item: ${error.message}`)
   }
 }
 
 // Get all
-export const getItems = async (body: RequestBodyType): Promise<{ count: number; rows: ProductSchema[] }> => {
+export const getItems = async (body: RequestBodyType) => {
   try {
-    const items = await ProductSchema.findAndCountAll({
-      offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
-      limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
-      order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<Product>(body)
-    })
+    const items = await ProductSchema.findAndCountAll(getItemsQuery(body))
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
-  }
-}
-
-export const getItemsWithStatus = async (status: ItemStatusType): Promise<ProductSchema[]> => {
-  try {
-    return await ProductSchema.findAll({
-      where: {
-        status: status
-      }
-    })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
-  }
-}
-
-export const getItemsCount = async (): Promise<number> => {
-  try {
-    return await ProductSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    throw `Error getting list: ${error.message}`
   }
 }
 
 // Update
-export const updateItemByPk = async (
-  id: number,
-  itemToUpdate: Product
-): Promise<Product | ProductSchema[] | undefined> => {
+export const updateItemByPk = async (id: number, itemToUpdate: Product) => {
   try {
-    const updatedCount = await ProductSchema.update(
-      {
-        ...itemToUpdate
-      },
-      {
-        where: {
-          id: id
+    const itemFound = await ProductSchema.findByPk(id)
+    if (!itemFound) throw new Error(`Item not found`)
+    await itemFound.update(itemToUpdate)
+    return itemToUpdate
+  } catch (error: any) {
+    throw new Error(`Error updating item: ${error.message}`)
+  }
+}
+
+export const updateItems = async (itemsUpdate: Product[]) => {
+  try {
+    const updatedItems = await Promise.all(
+      itemsUpdate.map(async (item) => {
+        const user = await ProductSchema.findByPk(item.id)
+        if (!user) {
+          throw new Error(`Item with id ${item.id} not found`)
         }
-      }
+        await user.update(item)
+        return user
+      })
     )
-    return updatedCount[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `Error updateItemByPk :: ${error}`)
-    throw new Error(`updateItemByPk :: ${error}`)
+    return updatedItems
+  } catch (error: any) {
+    throw `Error updating multiple item: ${error.message}`
   }
 }
 
 // Delete
-export const deleteItemByPk = async (id: number): Promise<number> => {
+export const deleteItemByPk = async (id: number) => {
   try {
-    return await ProductSchema.destroy({ where: { id: id } })
-  } catch (error) {
-    logging.error(NAMESPACE, `Error deleteItemByPk :: ${error}`)
-    throw new Error(`deleteItemByPk :: ${error}`)
+    const itemFound = await ProductSchema.findByPk(id)
+    if (!itemFound) throw new Error(`Item not found`)
+    await itemFound.destroy()
+    return { message: 'Deleted successfully' }
+  } catch (error: any) {
+    throw new Error(`Error deleting item: ${error.message}`)
   }
 }

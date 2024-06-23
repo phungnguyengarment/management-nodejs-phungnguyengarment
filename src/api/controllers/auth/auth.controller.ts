@@ -31,8 +31,8 @@ export default class AuthController {
         data: { ...userFound.dataValues, accessToken: accessToken },
         message: message.LOGIN_SUCCESS
       })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -96,8 +96,8 @@ export default class AuthController {
       const userRoles = await userRoleService.getItemsBy({ userID: userFound.id })
       if (!userRoles) return res.formatter.notFound({ message: 'Can not get user roles!' })
       return res.formatter.ok({ data: userRoles, meta: userFound })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 
@@ -114,8 +114,8 @@ export default class AuthController {
       const userFound = await service.getItemBy({ email: email })
       if (!userFound) return res.formatter.notFound({ message: `Can not find user on database with email: ${email}` })
       return res.formatter.ok({ data: userFound })
-    } catch (error) {
-      return res.formatter.badRequest({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.badRequest({ message: `${error.message}` })
     }
   }
 }

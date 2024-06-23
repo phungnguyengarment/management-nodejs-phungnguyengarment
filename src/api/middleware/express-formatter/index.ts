@@ -5,6 +5,7 @@ import methods, { Method, MethodType } from './methods'
 export interface ResponseStory {
   success?: boolean
   message?: string
+  detailError?: string
   data?: any
   meta?: any
   length?: number
@@ -37,9 +38,16 @@ const _generateFormatters = (res: Response) => {
 
   methods.map((method: Method) => {
     formatter[method.type] = (response: ResponseStory) => {
+      const statusSuccess =
+        method.status === 200 ||
+        method.status === 201 ||
+        method.status === 202 ||
+        method.status === 203 ||
+        method.status === 204
       return res.status(method.status).json({
-        success: method.status < 400,
+        success: statusSuccess,
         message: response.message ? response.message : method.message,
+        detailError: response.detailError,
         data: response.data,
         meta: response.meta,
         length: response.length,

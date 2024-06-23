@@ -1,16 +1,16 @@
 import SewingLineSchema, { SewingLine } from '~/models/sewing-line.model'
 import { ItemStatusType, RequestBodyType } from '~/type'
 import logging from '~/utils/logging'
-import { buildDynamicQuery } from '../helpers/query'
+import { dynamicQuery } from '../helpers/query'
 
 const NAMESPACE = 'services/sewing-line'
 
 export const createNewItem = async (item: SewingLine): Promise<SewingLineSchema> => {
   try {
     return await SewingLineSchema.create({ ...item })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -18,18 +18,18 @@ export const createNewItem = async (item: SewingLine): Promise<SewingLineSchema>
 export const getItemByPk = async (id: number): Promise<SewingLineSchema | null> => {
   try {
     return await SewingLineSchema.findByPk(id)
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemBy = async (item: SewingLine): Promise<SewingLineSchema | null> => {
   try {
     return await SewingLineSchema.findOne({ where: { ...item } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -40,12 +40,12 @@ export const getItems = async (body: RequestBodyType): Promise<{ count: number; 
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<SewingLine>(body)
+      where: dynamicQuery<SewingLine>(body)
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -57,18 +57,18 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<Sewing
       }
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await SewingLineSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -86,9 +86,9 @@ export const updateItemByPk = async (id: number, itemToUpdate: SewingLine): Prom
       }
     )
     return affectedRows[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -96,8 +96,8 @@ export const updateItemByPk = async (id: number, itemToUpdate: SewingLine): Prom
 export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     return await SewingLineSchema.destroy({ where: { id: id } })
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }

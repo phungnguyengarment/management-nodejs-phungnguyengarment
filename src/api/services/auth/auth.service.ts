@@ -28,7 +28,7 @@ export const registerUser = async (user: User): Promise<UserSchema | null> => {
         return null
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error register ${NAMESPACE} :: ${error}`)
     throw new Error(`Register ${NAMESPACE} :: ${error}`)
   }
@@ -52,7 +52,7 @@ export const loginUser = async (email: string, password: string): Promise<UserSc
     } else {
       return null
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(PATH, `Error login ${NAMESPACE} :: ${error}`)
     throw new Error(`Login ${NAMESPACE} :: ${error}`)
   }

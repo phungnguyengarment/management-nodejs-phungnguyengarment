@@ -17,8 +17,8 @@ export const checkRole = (roles: UserRole[]) => {
       if (!userRolesFound) return res.formatter.notFound({ message: 'User not found' })
       if (!userRolesFound.some((userRole) => roles.includes(userRole.role.role as UserRole)))
         return res.formatter.unauthorized({})
-    } catch (error) {
-      return res.formatter.unauthorized({ message: `${error}` })
+    } catch (error: any) {
+      return res.formatter.unauthorized({ message: `${error.message}` })
     }
 
     next()
@@ -46,8 +46,8 @@ export const isAuthentication = async (req: Request, res: Response, next: NextFu
   try {
     const userFound = await userService.getItemBy({ email: email, password: password })
     if (!userFound) return res.formatter.notFound({ message: 'User not found!' })
-  } catch (error) {
-    return res.formatter.unauthorized({ message: `${error}` })
+  } catch (error: any) {
+    return res.formatter.unauthorized({ message: `${error.message}` })
   }
   next()
 }

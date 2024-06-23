@@ -1,4 +1,4 @@
-import { buildDynamicQuery } from '~/helpers/query'
+import { dynamicQuery } from '~/helpers/query'
 import ColorSchema from '~/models/color.model'
 import ProductColorSchema, { ProductColor } from '~/models/product-color.model'
 import ProductSchema from '~/models/product.model'
@@ -18,8 +18,8 @@ export const createNewItem = async (item: ProductColor): Promise<ProductColorSch
         ]
       }
     )
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -34,9 +34,9 @@ export const getItemByPk = async (id: number): Promise<ProductColorSchema | null
       ]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
@@ -51,8 +51,8 @@ export const getItemBy = async (product: ProductColor): Promise<ProductColorSche
       ]
     })
     return item
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -64,15 +64,15 @@ export const getItems = async (body: RequestBodyType): Promise<{ count: number; 
       offset: (Number(body.paginator.page) - 1) * Number(body.paginator.pageSize),
       limit: body.paginator.pageSize === -1 ? undefined : body.paginator.pageSize,
       order: [[body.sorting.column, body.sorting.direction]],
-      where: buildDynamicQuery<ProductColor>(body),
+      where: dynamicQuery<ProductColor>(body),
       include: [
         { model: ProductSchema, as: 'product' },
         { model: ColorSchema, as: 'color' }
       ]
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -85,17 +85,17 @@ export const getItemsWithStatus = async (status: ItemStatusType): Promise<Produc
       }
     })
     return items
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
-    throw new Error(`${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
+    throw new Error(`${error.message}`)
   }
 }
 
 export const getItemsCount = async (): Promise<number> => {
   try {
     return await ProductSchema.count()
-  } catch (error) {
-    logging.error(NAMESPACE, `${error}`)
+  } catch (error: any) {
+    logging.error(NAMESPACE, `${error.message}`)
     throw new Error(`${NAMESPACE} ${error}`)
   }
 }
@@ -117,7 +117,7 @@ export const updateItemByPk = async (
       }
     )
     return updatedCount[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByPk :: ${error}`)
     throw new Error(`updateItemByPk :: ${error}`)
   }
@@ -139,7 +139,7 @@ export const updateItemBy = async (
       }
     )
     return updatedCount[0] > 0 ? itemToUpdate : undefined
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error updateItemByProductID :: ${error}`)
     throw new Error(`updateItemByProductID :: ${error}`)
   }
@@ -166,7 +166,7 @@ export const createOrUpdateItemByPk = async (
     } else {
       return await ProductColorSchema.create({ ...item })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByPk :: ${error}`)
     throw new Error(`createOrUpdateItemByPk :: ${error}`)
   }
@@ -192,7 +192,7 @@ export const createOrUpdateItemBy = async (
     } else {
       return await ProductColorSchema.create({ ...item, [query.field]: query.id })
     }
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error createOrUpdateItemByProductID :: ${error}`)
     throw new Error(`createOrUpdateItemByProductID :: ${error}`)
   }
@@ -203,7 +203,7 @@ export const deleteItemByPk = async (id: number): Promise<number> => {
   try {
     const affectedRows = await ProductColorSchema.destroy({ where: { id: id } })
     return affectedRows
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemByPk :: ${error}`)
     throw new Error(`deleteItemByPk :: ${error}`)
   }
@@ -213,7 +213,7 @@ export const deleteItemBy = async (query: { field: string; id: number }): Promis
   try {
     const affectedRows = await ProductColorSchema.destroy({ where: { [query.field]: query.id } })
     return affectedRows
-  } catch (error) {
+  } catch (error: any) {
     logging.error(NAMESPACE, `Error deleteItemByColorID :: ${error}`)
     throw new Error(`deleteItemByColorID :: ${error}`)
   }
